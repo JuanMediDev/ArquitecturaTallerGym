@@ -1,0 +1,46 @@
+@model ReporteViewModel
+@using Gimnasio.Negocio.Entidades
+@{
+    ViewData["Title"] = "Membresías activas";
+}
+
+<p class="display-kicker mb-2">Resultados / Membresías</p>
+<h1 class="section-heading">Membresías activas</h1>
+<p class="text-secondary mb-4">Membresías vigentes al @Model.FechaFin.ToString("dd/MM/yyyy").</p>
+
+<nav class="d-flex flex-wrap gap-2 mb-4" aria-label="Reportes">
+    <a class="btn btn-outline-light" asp-action="Ingresos">Ingresos</a>
+    <a class="btn btn-accent" asp-action="MembresiasActivas">Membresías activas</a>
+    <a class="btn btn-outline-light" asp-action="Asistencia">Asistencia</a>
+</nav>
+
+<div class="module-card mb-4">
+    <p class="display-kicker mb-2">Estado actual</p>
+    <p class="h4 fw-bold mb-0">@Model.Membresias.Count membresía(s) activa(s)</p>
+</div>
+
+@if (Model.Membresias.Count == 0)
+{
+    <div class="module-card text-secondary">No hay membresías activas vigentes en este momento.</div>
+}
+else
+{
+    <div class="table-responsive rounded-3 border border-secondary">
+        <table class="table table-dark table-hover align-middle mb-0">
+            <thead><tr><th>Cliente</th><th>Documento</th><th>Plan</th><th>Inicio</th><th>Vence</th><th>Estado</th></tr></thead>
+            <tbody>
+                @foreach (var membresia in Model.Membresias)
+                {
+                    <tr>
+                        <td class="fw-semibold">@membresia.Cliente</td>
+                        <td>@membresia.Documento</td>
+                        <td>@membresia.Plan</td>
+                        <td>@membresia.FechaInicio.ToString("dd/MM/yyyy")</td>
+                        <td>@membresia.FechaFin.ToString("dd/MM/yyyy")</td>
+                        <td><span class="badge @(membresia.Estado == EstadoMembresia.Activa ? "text-bg-success" : "text-bg-secondary")">@membresia.Estado</span></td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+}

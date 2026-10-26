@@ -1,0 +1,66 @@
+@model ReporteViewModel
+@{
+    ViewData["Title"] = "Reporte de ingresos";
+}
+
+<p class="display-kicker mb-2">Resultados / Ingresos</p>
+<h1 class="section-heading">Reporte de ingresos</h1>
+<p class="text-secondary mb-4">Consulta los pagos registrados en el periodo seleccionado. Los pagos anulados no se incluyen.</p>
+
+<nav class="d-flex flex-wrap gap-2 mb-4" aria-label="Reportes">
+    <a class="btn btn-accent" asp-action="Ingresos">Ingresos</a>
+    <a class="btn btn-outline-light" asp-action="MembresiasActivas">Membresías activas</a>
+    <a class="btn btn-outline-light" asp-action="Asistencia">Asistencia</a>
+</nav>
+
+<section class="module-card mb-4">
+    <form asp-action="Ingresos" method="get" class="row g-3 align-items-end">
+        <div class="col-md-4">
+            <label class="form-label" for="fechaInicio">Desde</label>
+            <input class="form-control" id="fechaInicio" name="fechaInicio" type="date" value="@Model.FechaInicio.ToString("yyyy-MM-dd")" />
+        </div>
+        <div class="col-md-4">
+            <label class="form-label" for="fechaFin">Hasta</label>
+            <input class="form-control" id="fechaFin" name="fechaFin" type="date" value="@Model.FechaFin.ToString("yyyy-MM-dd")" />
+        </div>
+        <div class="col-md-4">
+            <button type="submit" class="btn btn-accent">Consultar periodo</button>
+        </div>
+    </form>
+</section>
+
+<div class="d-flex flex-wrap justify-content-between align-items-end gap-2 mb-3">
+    <div>
+        <p class="display-kicker mb-2">Periodo consultado</p>
+        <h2 class="section-heading mb-0">@Model.FechaInicio.ToString("dd/MM/yyyy") – @Model.FechaFin.ToString("dd/MM/yyyy")</h2>
+    </div>
+    <div class="text-end">
+        <span class="text-secondary d-block">Total registrado</span>
+        <strong class="h3">@Model.TotalIngresos.ToString("C")</strong>
+    </div>
+</div>
+
+@if (Model.Ingresos.Count == 0)
+{
+    <div class="module-card text-secondary">No hay ingresos registrados en este periodo.</div>
+}
+else
+{
+    <div class="table-responsive rounded-3 border border-secondary">
+        <table class="table table-dark table-hover align-middle mb-0">
+            <thead><tr><th>Fecha</th><th>Cliente</th><th>Plan</th><th>Método</th><th class="text-end">Monto</th></tr></thead>
+            <tbody>
+                @foreach (var ingreso in Model.Ingresos)
+                {
+                    <tr>
+                        <td>@ingreso.FechaPago.ToString("dd/MM/yyyy HH:mm")</td>
+                        <td>@ingreso.Cliente</td>
+                        <td>@ingreso.Plan</td>
+                        <td>@ingreso.MetodoPago</td>
+                        <td class="text-end">@ingreso.Monto.ToString("C")</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+}

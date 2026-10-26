@@ -1,0 +1,77 @@
+@model PagoFormViewModel
+@{
+    ViewData["Title"] = "Registrar pago";
+}
+
+<p class="display-kicker mb-2">Ingresos / Nuevo registro</p>
+<h1 class="section-heading">Registrar pago</h1>
+<p class="text-secondary mb-4">Asocia el pago a la membresía correspondiente. Los registros quedan en el historial y no se editan.</p>
+
+<section class="module-card mb-4">
+    <form asp-action="Registrar" method="get" class="row g-3 align-items-end">
+        <div class="col-md-8">
+            <label class="form-label" for="cliente-selector">Selecciona primero un cliente</label>
+            <select class="form-select" id="cliente-selector" name="clienteId" asp-items="Model.Clientes">
+                <option value="">Selecciona un cliente</option>
+            </select>
+        </div>
+        <div class="col-md-4">
+            <button class="btn btn-outline-light" type="submit">Cargar membresías</button>
+        </div>
+    </form>
+</section>
+
+@if (Model.ClienteId > 0)
+{
+    @if (Model.Membresias.Count == 0)
+    {
+        <div class="alert alert-warning" role="status">Este cliente no tiene membresías registradas para asociar un pago.</div>
+    }
+    else
+    {
+        <div class="module-card">
+            <form asp-action="Registrar" method="post">
+                @Html.AntiForgeryToken()
+                <input asp-for="ClienteId" type="hidden" />
+                <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+                <div class="row g-3">
+                    <div class="col-12">
+                        <label asp-for="MembresiaId" class="form-label"></label>
+                        <select asp-for="MembresiaId" asp-items="Model.Membresias" class="form-select">
+                            <option value="0">Selecciona una membresía</option>
+                        </select>
+                        <span asp-validation-for="MembresiaId" class="text-danger"></span>
+                    </div>
+                    <div class="col-md-4">
+                        <label asp-for="Monto" class="form-label"></label>
+                        <input asp-for="Monto" class="form-control" type="number" min="0.01" step="0.01" />
+                        <span asp-validation-for="Monto" class="text-danger"></span>
+                    </div>
+                    <div class="col-md-4">
+                        <label asp-for="MetodoPago" class="form-label"></label>
+                        <select asp-for="MetodoPago" class="form-select">
+                            <option value="">Selecciona un método</option>
+                            <option value="Efectivo">Efectivo</option>
+                            <option value="Tarjeta">Tarjeta</option>
+                            <option value="Transferencia">Transferencia</option>
+                        </select>
+                        <span asp-validation-for="MetodoPago" class="text-danger"></span>
+                    </div>
+                    <div class="col-md-4">
+                        <label asp-for="FechaPago" class="form-label"></label>
+                        <input asp-for="FechaPago" class="form-control" type="datetime-local" />
+                        <span asp-validation-for="FechaPago" class="text-danger"></span>
+                    </div>
+                    <div class="col-12 d-flex flex-wrap gap-2 mt-4">
+                        <button type="submit" class="btn btn-accent">Guardar pago</button>
+                        <a asp-action="Historial" asp-route-clienteId="@Model.ClienteId" class="btn btn-outline-light">Ver historial</a>
+                    </div>
+                </div>
+            </form>
+        </div>
+    }
+}
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

@@ -1,0 +1,22 @@
+﻿@model ErrorViewModel
+@{
+    ViewData["Title"] = "Aviso";
+}
+
+<section class="hero-panel">
+    <p class="display-kicker mb-2">No pudimos completar la acción</p>
+    <h1 class="hero-title">Revisa este <span>aviso</span></h1>
+    @if (!string.IsNullOrWhiteSpace(Model.Mensaje))
+    {
+        <p class="hero-copy">@Model.Mensaje</p>
+    }
+    else
+    {
+        <p class="hero-copy">Ocurrió un error al procesar la solicitud. Intenta nuevamente.</p>
+    }
+    @if (Model.ShowRequestId)
+    {
+        <p class="text-secondary mt-3 mb-0">Referencia: <code>@Model.RequestId</code></p>
+    }
+    <a class="btn btn-accent mt-4" asp-controller="Home" asp-action="Index">Volver al inicio</a>
+</section>

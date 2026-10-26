@@ -1,0 +1,33 @@
+@model ReservaClaseSeleccionViewModel
+@{
+    ViewData["Title"] = "Reservas por clase";
+}
+
+<p class="display-kicker mb-2">Participación / Sesiones</p>
+<h1 class="section-heading">Reservas por clase</h1>
+<p class="text-secondary mb-4">Selecciona una sesión para consultar sus reservas y registrar asistencia.</p>
+
+<div class="module-card">
+    @if (Model.Clases.Count == 0)
+    {
+        <p class="text-secondary">Todavía no hay clases programadas.</p>
+        <a class="btn btn-accent" asp-controller="Clases" asp-action="Programar">Programar clase</a>
+    }
+    else
+    {
+        <form asp-action="PorClase" method="get">
+            <div class="row g-3 align-items-end">
+                <div class="col-md-8">
+                    <label class="form-label" for="claseId">Clase</label>
+                    <select class="form-select" id="claseId" name="claseId" asp-items="Model.Clases">
+                        <option value="">Selecciona una clase</option>
+                    </select>
+                </div>
+                <div class="col-md-4">
+                    <button type="submit" class="btn btn-accent">Ver reservas</button>
+                </div>
+            </div>
+        </form>
+    }
+    <a asp-action="Reservar" class="btn btn-outline-light mt-3">Crear reserva</a>
+</div>

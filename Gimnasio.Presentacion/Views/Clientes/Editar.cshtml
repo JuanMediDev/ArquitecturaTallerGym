@@ -1,0 +1,16 @@
+@model ClienteFormViewModel
+@{
+    ViewData["Title"] = "Editar cliente";
+}
+
+<p class="display-kicker mb-2">Personas / Actualizar perfil</p>
+<h1 class="section-heading">Editar cliente</h1>
+<p class="text-secondary mb-4">Actualiza la información del perfil seleccionado.</p>
+
+<div class="module-card">
+    <partial name="_Formulario" model="Model" />
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

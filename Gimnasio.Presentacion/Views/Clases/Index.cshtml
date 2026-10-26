@@ -1,0 +1,68 @@
+@model ClaseListaViewModel
+@using Gimnasio.Negocio.Entidades
+@{
+    ViewData["Title"] = "Programación de clases";
+}
+
+<div class="d-flex flex-column flex-sm-row justify-content-between align-items-sm-end gap-3 mb-4">
+    <div>
+        <p class="display-kicker mb-2">Entrenamiento grupal</p>
+        <h1 class="section-heading mb-0">Programación de clases</h1>
+        <p class="text-secondary mt-2 mb-0">Consulta horarios, instructores y cupos de las sesiones.</p>
+    </div>
+    <div class="d-flex flex-wrap gap-2">
+        <a class="btn btn-outline-light" asp-controller="Reservas" asp-action="PorClase">Ver reservas</a>
+        <a class="btn btn-accent" asp-action="Programar">Programar clase</a>
+    </div>
+</div>
+
+@if (TempData["Mensaje"] is string mensaje)
+{
+    <div class="alert alert-success" role="status">@mensaje</div>
+}
+
+<section class="mb-5" aria-labelledby="instructores-heading">
+    <p class="display-kicker mb-2">Equipo del gimnasio</p>
+    <h2 class="section-heading" id="instructores-heading">Instructores</h2>
+    <div class="row g-3">
+        @foreach (var instructor in Model.Instructores)
+        {
+            <div class="col-sm-6 col-lg-4">
+                <article class="module-card h-100">
+                    <span class="module-number">INSTRUCTOR</span>
+                    <h3 class="h5 fw-bold">@instructor.Nombre</h3>
+                    <p class="text-secondary mb-0">@instructor.Especialidad</p>
+                </article>
+            </div>
+        }
+    </div>
+</section>
+
+@if (Model.Clases.Count == 0)
+{
+    <div class="module-card text-secondary">Todavía no hay clases programadas.</div>
+}
+else
+{
+    <div class="row g-3">
+        @foreach (var clase in Model.Clases)
+        {
+            <div class="col-md-6 col-xl-4">
+                <article class="module-card h-100">
+                    <div class="d-flex justify-content-between align-items-start gap-2">
+                        <span class="module-number">SESIÓN PROGRAMADA</span>
+                        <span class="badge @(clase.Estado == EstadoClase.Programada ? "text-bg-success" : "text-bg-secondary")">@clase.Estado</span>
+                    </div>
+                    <h2 class="h4 fw-bold">@clase.Nombre</h2>
+                    <p class="mb-1">@clase.Instructor</p>
+                    <p class="text-secondary">@clase.Especialidad</p>
+                    <div class="border-top border-secondary pt-3 mt-3">
+                        <p class="mb-1"><strong>@clase.FechaHoraInicio.ToString("dddd dd/MM · HH:mm")</strong></p>
+                        <p class="text-secondary mb-0">Hasta @clase.FechaHoraFin.ToString("HH:mm") · Cupo @clase.CupoMaximo</p>
+                    </div>
+                    <a class="btn btn-sm btn-outline-light mt-3" asp-controller="Reservas" asp-action="PorClase" asp-route-claseId="@clase.Id">Ver reservas</a>
+                </article>
+            </div>
+        }
+    </div>
+}

@@ -1,0 +1,67 @@
+﻿@{
+    ViewData["Title"] = "Inicio";
+}
+
+<section class="hero-panel mb-5">
+    <p class="display-kicker mb-2">Tu gimnasio, en movimiento</p>
+    <h1 class="hero-title">Entrena fuerte.<br /><span>Gestiona mejor.</span></h1>
+    <p class="hero-copy mb-4">Administra clientes, membresías, pagos y clases desde un solo lugar. Una operación clara para que cada persona se enfoque en avanzar.</p>
+    <div class="d-flex flex-wrap gap-3">
+        <a class="btn btn-accent" asp-controller="Clientes" asp-action="Index">Ver clientes</a>
+        <a class="btn btn-outline-light" asp-controller="Clases" asp-action="Index">Explorar clases</a>
+    </div>
+</section>
+
+<section aria-labelledby="modulos-heading">
+    <div class="d-flex flex-column flex-sm-row align-items-sm-end justify-content-between gap-2 mb-3">
+        <div>
+            <p class="display-kicker mb-2">Panel de operación</p>
+            <h2 class="section-heading mb-0" id="modulos-heading">Accesos principales</h2>
+        </div>
+        <p class="text-secondary mb-0">Selecciona un módulo para comenzar.</p>
+    </div>
+    <div class="row g-3">
+        <div class="col-sm-6 col-lg-4">
+            <a class="module-card" asp-controller="Clientes" asp-action="Index">
+                <span class="module-number">01 / PERSONAS</span>
+                <h3>Clientes</h3>
+                <p>Consulta y administra los perfiles de tus clientes.</p>
+            </a>
+        </div>
+        <div class="col-sm-6 col-lg-4">
+            <a class="module-card" asp-controller="Membresias" asp-action="Planes">
+                <span class="module-number">02 / PLANES</span>
+                <h3>Membresías</h3>
+                <p>Organiza planes, asignaciones y vigencias.</p>
+            </a>
+        </div>
+        <div class="col-sm-6 col-lg-4">
+            <a class="module-card" asp-controller="Pagos" asp-action="Historial">
+                <span class="module-number">03 / INGRESOS</span>
+                <h3>Pagos</h3>
+                <p>Registra pagos y consulta su historial.</p>
+            </a>
+        </div>
+        <div class="col-sm-6 col-lg-4">
+            <a class="module-card" asp-controller="Clases" asp-action="Index">
+                <span class="module-number">04 / ACTIVIDADES</span>
+                <h3>Clases</h3>
+                <p>Revisa la programación de sesiones grupales.</p>
+            </a>
+        </div>
+        <div class="col-sm-6 col-lg-4">
+            <a class="module-card" asp-controller="Reservas" asp-action="PorClase">
+                <span class="module-number">05 / PARTICIPACIÓN</span>
+                <h3>Reservas y asistencia</h3>
+                <p>Consulta quién reservó y registra asistencia.</p>
+            </a>
+        </div>
+        <div class="col-sm-6 col-lg-4">
+            <a class="module-card" asp-controller="Reportes" asp-action="Ingresos">
+                <span class="module-number">06 / RESULTADOS</span>
+                <h3>Reportes</h3>
+                <p>Revisa ingresos, membresías y asistencia.</p>
+            </a>
+        </div>
+    </div>
+</section>

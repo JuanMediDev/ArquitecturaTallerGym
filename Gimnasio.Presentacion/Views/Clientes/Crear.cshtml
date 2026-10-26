@@ -1,0 +1,16 @@
+@model ClienteFormViewModel
+@{
+    ViewData["Title"] = "Registrar cliente";
+}
+
+<p class="display-kicker mb-2">Personas / Nuevo registro</p>
+<h1 class="section-heading">Registrar cliente</h1>
+<p class="text-secondary mb-4">Completa los datos para crear un perfil en el gimnasio.</p>
+
+<div class="module-card">
+    <partial name="_Formulario" model="Model" />
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

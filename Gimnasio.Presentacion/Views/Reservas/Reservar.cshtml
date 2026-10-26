@@ -1,0 +1,52 @@
+@model ReservaFormViewModel
+@{
+    ViewData["Title"] = "Reservar clase";
+}
+
+<p class="display-kicker mb-2">Participación / Nueva reserva</p>
+<h1 class="section-heading">Reservar una clase</h1>
+<p class="text-secondary mb-4">Selecciona cliente y sesión. El acceso, la disponibilidad y las reservas duplicadas se validan al confirmar.</p>
+
+<div class="module-card">
+    @if (Model.Clientes.Count == 0)
+    {
+        <div class="alert alert-warning" role="status">Registra un cliente antes de crear una reserva.</div>
+        <a class="btn btn-accent" asp-controller="Clientes" asp-action="Crear">Registrar cliente</a>
+    }
+    else if (Model.Clases.Count == 0)
+    {
+        <div class="alert alert-warning" role="status">No hay sesiones programadas disponibles.</div>
+        <a class="btn btn-accent" asp-controller="Clases" asp-action="Programar">Programar clase</a>
+    }
+    else
+    {
+        <form asp-action="Reservar" method="post">
+            @Html.AntiForgeryToken()
+            <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+            <div class="row g-3">
+                <div class="col-md-6">
+                    <label asp-for="ClienteId" class="form-label"></label>
+                    <select asp-for="ClienteId" asp-items="Model.Clientes" class="form-select">
+                        <option value="0">Selecciona un cliente</option>
+                    </select>
+                    <span asp-validation-for="ClienteId" class="text-danger"></span>
+                </div>
+                <div class="col-md-6">
+                    <label asp-for="ClaseId" class="form-label"></label>
+                    <select asp-for="ClaseId" asp-items="Model.Clases" class="form-select">
+                        <option value="0">Selecciona una clase</option>
+                    </select>
+                    <span asp-validation-for="ClaseId" class="text-danger"></span>
+                </div>
+                <div class="col-12 d-flex flex-wrap gap-2 mt-4">
+                    <button type="submit" class="btn btn-accent">Confirmar reserva</button>
+                    <a asp-action="PorClase" class="btn btn-outline-light">Consultar reservas</a>
+                </div>
+            </div>
+        </form>
+    }
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

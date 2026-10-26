@@ -1,0 +1,38 @@
+@model ClienteFormViewModel
+@using Gimnasio.Negocio.Entidades
+
+<form method="post">
+    @Html.AntiForgeryToken()
+    <input asp-for="Id" type="hidden" />
+    <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+    <div class="row g-3">
+        <div class="col-md-6">
+            <label asp-for="Nombre" class="form-label"></label>
+            <input asp-for="Nombre" class="form-control" autocomplete="name" />
+            <span asp-validation-for="Nombre" class="text-danger"></span>
+        </div>
+        <div class="col-md-6">
+            <label asp-for="Documento" class="form-label"></label>
+            <input asp-for="Documento" class="form-control" />
+            <span asp-validation-for="Documento" class="text-danger"></span>
+        </div>
+        <div class="col-md-6">
+            <label asp-for="Correo" class="form-label"></label>
+            <input asp-for="Correo" class="form-control" autocomplete="email" />
+            <span asp-validation-for="Correo" class="text-danger"></span>
+        </div>
+        <div class="col-md-6">
+            <label asp-for="Telefono" class="form-label"></label>
+            <input asp-for="Telefono" class="form-control" autocomplete="tel" />
+            <span asp-validation-for="Telefono" class="text-danger"></span>
+        </div>
+        <div class="col-md-6">
+            <label asp-for="Estado" class="form-label"></label>
+            <select asp-for="Estado" asp-items="Html.GetEnumSelectList<EstadoCliente>()" class="form-select"></select>
+        </div>
+        <div class="col-12 d-flex flex-wrap gap-2 mt-4">
+            <button type="submit" class="btn btn-accent">Guardar cliente</button>
+            <a asp-action="Index" class="btn btn-outline-light">Cancelar</a>
+        </div>
+    </div>
+</form>

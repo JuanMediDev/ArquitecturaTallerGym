@@ -1,0 +1,49 @@
+@model MembresiaViewModel
+@using Gimnasio.Negocio.Entidades
+@{
+    ViewData["Title"] = "Membresías del cliente";
+}
+
+<div class="d-flex flex-column flex-sm-row justify-content-between align-items-sm-end gap-3 mb-4">
+    <div>
+        <p class="display-kicker mb-2">Historial de membresías</p>
+        <h1 class="section-heading mb-0">@Model.NombreCliente</h1>
+        <p class="text-secondary mt-2 mb-0">Revisa vigencias, estado y pagos registrados.</p>
+    </div>
+    <div class="d-flex flex-wrap gap-2">
+        <a class="btn btn-outline-light" asp-controller="Clientes" asp-action="Detalle" asp-route-id="@Model.ClienteId">Perfil del cliente</a>
+        <a class="btn btn-outline-light" asp-controller="Pagos" asp-action="Registrar" asp-route-clienteId="@Model.ClienteId">Registrar pago</a>
+        <a class="btn btn-accent" asp-action="Asignar" asp-route-clienteId="@Model.ClienteId">Asignar plan</a>
+    </div>
+</div>
+
+@if (TempData["Mensaje"] is string mensaje)
+{
+    <div class="alert alert-success" role="status">@mensaje</div>
+}
+
+@if (Model.Membresias.Count == 0)
+{
+    <div class="module-card text-secondary">Este cliente aún no tiene membresías asignadas.</div>
+}
+else
+{
+    <div class="table-responsive rounded-3 border border-secondary">
+        <table class="table table-dark table-hover align-middle mb-0">
+            <thead><tr><th>Plan</th><th>Inicio</th><th>Fin</th><th>Estado</th><th>Pagos registrados</th><th class="text-end">Precio del plan</th></tr></thead>
+            <tbody>
+                @foreach (var membresia in Model.Membresias)
+                {
+                    <tr>
+                        <td class="fw-semibold">@membresia.NombrePlan</td>
+                        <td>@membresia.FechaInicio.ToString("dd/MM/yyyy")</td>
+                        <td>@membresia.FechaFin.ToString("dd/MM/yyyy")</td>
+                        <td><span class="badge @(membresia.Estado == EstadoMembresia.Activa ? "text-bg-success" : "text-bg-secondary")">@membresia.Estado</span></td>
+                        <td>@membresia.PagosRegistrados</td>
+                        <td class="text-end">@membresia.PrecioPlan.ToString("C")</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+}

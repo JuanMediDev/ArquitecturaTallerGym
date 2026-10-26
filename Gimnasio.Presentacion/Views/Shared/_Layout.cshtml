@@ -1,0 +1,54 @@
+﻿<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - Pulso Gimnasio</title>
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/Gimnasio.Presentacion.styles.css" asp-append-version="true" />
+</head>
+<body>
+    <header class="site-header">
+        <nav class="navbar navbar-expand-lg navbar-dark">
+            <div class="container site-container">
+                <a class="navbar-brand brand-lockup" asp-area="" asp-controller="Home" asp-action="Index">
+                    <span class="brand-mark" aria-hidden="true">P</span>
+                    <span>PULSO<span class="brand-subtitle">GESTIÓN DE GIMNASIO</span></span>
+                </a>
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#menuPrincipal" aria-controls="menuPrincipal" aria-expanded="false" aria-label="Abrir navegación">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="collapse navbar-collapse" id="menuPrincipal">
+                    <ul class="navbar-nav ms-auto align-items-lg-center">
+                        <li class="nav-item"><a class="nav-link" asp-controller="Home" asp-action="Index">Inicio</a></li>
+                        <li class="nav-item"><a class="nav-link" asp-controller="Clientes" asp-action="Index">Clientes</a></li>
+                        <li class="nav-item"><a class="nav-link" asp-controller="Membresias" asp-action="Planes">Membresías</a></li>
+                        <li class="nav-item"><a class="nav-link" asp-controller="Pagos" asp-action="Historial">Pagos</a></li>
+                        <li class="nav-item"><a class="nav-link" asp-controller="Clases" asp-action="Index">Clases</a></li>
+                        <li class="nav-item"><a class="nav-link" asp-controller="Reservas" asp-action="PorClase">Reservas</a></li>
+                        <li class="nav-item"><a class="nav-link" asp-controller="Reportes" asp-action="Ingresos">Reportes</a></li>
+                    </ul>
+                    <span class="header-status"><span class="status-dot"></span> Administración</span>
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <main role="main" class="site-container page-content">
+        @RenderBody()
+    </main>
+
+    <footer class="site-footer">
+        <div class="container site-container d-flex flex-column flex-sm-row justify-content-between gap-2">
+            <span>&copy; 2026 Pulso Gimnasio · Plataforma de gestión</span>
+            <span>Entrena con propósito. Gestiona con claridad.</span>
+        </div>
+    </footer>
+
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="~/js/site.js" asp-append-version="true"></script>
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>

@@ -1,0 +1,61 @@
+@model ReporteViewModel
+@{
+    ViewData["Title"] = "Reporte de asistencia";
+}
+
+<p class="display-kicker mb-2">Resultados / Asistencia</p>
+<h1 class="section-heading">Reporte de asistencia</h1>
+<p class="text-secondary mb-4">Consulta los registros de asistencia a clases durante el periodo seleccionado.</p>
+
+<nav class="d-flex flex-wrap gap-2 mb-4" aria-label="Reportes">
+    <a class="btn btn-outline-light" asp-action="Ingresos">Ingresos</a>
+    <a class="btn btn-outline-light" asp-action="MembresiasActivas">Membresías activas</a>
+    <a class="btn btn-accent" asp-action="Asistencia">Asistencia</a>
+</nav>
+
+<section class="module-card mb-4">
+    <form asp-action="Asistencia" method="get" class="row g-3 align-items-end">
+        <div class="col-md-4">
+            <label class="form-label" for="fechaInicio">Desde</label>
+            <input class="form-control" id="fechaInicio" name="fechaInicio" type="date" value="@Model.FechaInicio.ToString("yyyy-MM-dd")" />
+        </div>
+        <div class="col-md-4">
+            <label class="form-label" for="fechaFin">Hasta</label>
+            <input class="form-control" id="fechaFin" name="fechaFin" type="date" value="@Model.FechaFin.ToString("yyyy-MM-dd")" />
+        </div>
+        <div class="col-md-4">
+            <button type="submit" class="btn btn-accent">Consultar periodo</button>
+        </div>
+    </form>
+</section>
+
+<div class="d-flex flex-wrap justify-content-between align-items-end gap-2 mb-3">
+    <div>
+        <p class="display-kicker mb-2">Periodo consultado</p>
+        <h2 class="section-heading mb-0">@Model.FechaInicio.ToString("dd/MM/yyyy") – @Model.FechaFin.ToString("dd/MM/yyyy")</h2>
+    </div>
+    <span class="text-secondary">@Model.Asistencias.Count registro(s)</span>
+</div>
+
+@if (Model.Asistencias.Count == 0)
+{
+    <div class="module-card text-secondary">No hay asistencias registradas en este periodo.</div>
+}
+else
+{
+    <div class="table-responsive rounded-3 border border-secondary">
+        <table class="table table-dark table-hover align-middle mb-0">
+            <thead><tr><th>Fecha y hora</th><th>Cliente</th><th>Clase</th></tr></thead>
+            <tbody>
+                @foreach (var asistencia in Model.Asistencias)
+                {
+                    <tr>
+                        <td>@asistencia.FechaHoraRegistro.ToString("dd/MM/yyyy HH:mm")</td>
+                        <td class="fw-semibold">@asistencia.Cliente</td>
+                        <td>@asistencia.NombreClase</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+}

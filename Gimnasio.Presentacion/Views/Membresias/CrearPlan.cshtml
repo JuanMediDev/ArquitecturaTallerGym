@@ -1,0 +1,45 @@
+@model PlanFormViewModel
+@{
+    ViewData["Title"] = "Crear plan";
+}
+
+<p class="display-kicker mb-2">Membresías / Nuevo plan</p>
+<h1 class="section-heading">Crear plan</h1>
+<p class="text-secondary mb-4">Establece duración, precio y beneficios del plan.</p>
+
+<div class="module-card">
+    <form asp-action="CrearPlan" method="post">
+        @Html.AntiForgeryToken()
+        <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+        <div class="row g-3">
+            <div class="col-md-6">
+                <label asp-for="Nombre" class="form-label"></label>
+                <input asp-for="Nombre" class="form-control" />
+                <span asp-validation-for="Nombre" class="text-danger"></span>
+            </div>
+            <div class="col-md-3">
+                <label asp-for="DuracionDias" class="form-label"></label>
+                <input asp-for="DuracionDias" class="form-control" />
+                <span asp-validation-for="DuracionDias" class="text-danger"></span>
+            </div>
+            <div class="col-md-3">
+                <label asp-for="Precio" class="form-label"></label>
+                <input asp-for="Precio" class="form-control" />
+                <span asp-validation-for="Precio" class="text-danger"></span>
+            </div>
+            <div class="col-12">
+                <label asp-for="Beneficios" class="form-label"></label>
+                <textarea asp-for="Beneficios" class="form-control" rows="4"></textarea>
+                <span asp-validation-for="Beneficios" class="text-danger"></span>
+            </div>
+            <div class="col-12 d-flex flex-wrap gap-2 mt-4">
+                <button type="submit" class="btn btn-accent">Guardar plan</button>
+                <a asp-action="Planes" class="btn btn-outline-light">Cancelar</a>
+            </div>
+        </div>
+    </form>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}
