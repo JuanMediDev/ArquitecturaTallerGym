@@ -1,4 +1,5 @@
 using System.Text.Json;
+using Microsoft.Data.Sqlite;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Design;
 
@@ -34,8 +35,15 @@ public class GimnasioDbContextFactory : IDesignTimeDbContextFactory<GimnasioDbCo
             .GetString()
             ?? throw new InvalidOperationException("No se encontró la cadena de conexión GimnasioDb.");
 
+        var opcionesConexion = new SqliteConnectionStringBuilder(cadenaConexion);
+        var rutaBaseDatos = Path.GetFullPath(
+            opcionesConexion.DataSource,
+            Path.GetDirectoryName(rutaConfiguracion)!);
+        Directory.CreateDirectory(Path.GetDirectoryName(rutaBaseDatos)!);
+        opcionesConexion.DataSource = rutaBaseDatos;
+
         var opciones = new DbContextOptionsBuilder<GimnasioDbContext>()
-            .UseSqlServer(cadenaConexion)
+            .UseSqlite(opcionesConexion.ToString())
             .Options;
 
         return new GimnasioDbContext(opciones);

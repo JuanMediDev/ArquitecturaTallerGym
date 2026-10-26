@@ -15,7 +15,7 @@ Se aplican dos principios de separación de responsabilidades:
 - **Arquitectura en 4 capas** (Presentación, Negocio, Acceso a Datos, Base de Datos).
 - **Patrón MVC** dentro de la capa de presentación.
 
-**Tecnología:** .NET 8, ASP.NET Core MVC, Entity Framework Core con SQL Server (LocalDB), xUnit para pruebas.
+**Tecnología:** .NET 8, ASP.NET Core MVC, Entity Framework Core con SQLite, xUnit para pruebas.
 
 **Fuera de alcance:** login/roles, pasarelas de pago reales, notificaciones, API pública, multi-sede avanzada, despliegue.
 
@@ -36,7 +36,7 @@ Gimnasio.sln
 | Presentación | `Gimnasio.Presentacion` | Vistas Razor, Controladores, ViewModels, recepción de solicitudes |
 | Negocio | `Gimnasio.Negocio` | Entidades de dominio, servicios/casos de uso, validaciones y reglas |
 | Acceso a datos (Persistencia) | `Gimnasio.Datos` | DbContext, repositorios, consultas, comunicación con la BD |
-| Base de datos | SQL Server | Tablas y estructuras persistentes |
+| Base de datos | SQLite | Archivo local con tablas y estructuras persistentes |
 
 ### Dependencias entre proyectos (capas cerradas)
 
@@ -123,7 +123,7 @@ Migraciones/             Migración inicial
 
 - Repositorios solo contienen consultas y persistencia (sin reglas de negocio).
 - Configurar en `OnModelCreating`: claves, longitudes, enums como string e **índice único** en `Reserva(ClienteId, ClaseId)` para reservas activas (si es complejo, un índice único simple es suficiente).
-- Cadena de conexión en `appsettings.json` de `Presentacion` (LocalDB).
+- Cadena de conexión SQLite en `appsettings.json` de `Presentacion`; el archivo local se crea al iniciar la aplicación.
 
 ---
 
@@ -167,7 +167,7 @@ Usuario ──(1) POST /Reservas/Reservar ──► ReservasController
 ReservasController ──(2) valida ModelState (formato) ──► ReservaService.Reservar(clienteId, claseId)
 ReservaService ──(3) aplica reglas 3,4,5 ──► repositorios (IClienteRepositorio, IMembresiaRepositorio,
                                               IPagoRepositorio, IReservaRepositorio, IClaseRepositorio)
-Repositorios (Datos) ──(4) consultas EF Core ──► SQL Server
+Repositorios (Datos) ──(4) consultas EF Core ──► SQLite
 ReservaService ──(5) guarda la Reserva ──► devuelve OK o lanza ReglaNegocioException
 ReservasController ──(6) arma ViewModel con resultado o mensaje de error ──► Vista
 Vista ──(7) renderiza HTML ──► Usuario
@@ -191,7 +191,7 @@ Vista ──(7) renderiza HTML ──► Usuario
 
 ## 9. Plan de implementación por pasos (para el agente)
 
-**Paso 1 — Solución y proyectos.** Crear `Gimnasio.sln` con `Presentacion` (ASP.NET Core MVC, .NET 8), `Negocio` y `Datos` (class libraries) y `Pruebas` (xUnit). Referencias: Presentacion→Negocio, Presentacion→Datos (solo DI), Datos→Negocio, Pruebas→Negocio. Paquetes: EF Core SqlServer + Tools en `Datos`; Moq en `Pruebas`.
+Paquetes: EF Core SQLite + Tools en `Datos`; Moq en `Pruebas`.
 ✔ *Criterio:* la solución compila.
 
 **Paso 2 — Entidades y excepción.** Crear en `Negocio` las 8 entidades, enums de estado y `ReglaNegocioException`.
@@ -200,8 +200,8 @@ Vista ──(7) renderiza HTML ──► Usuario
 **Paso 3 — Interfaces de repositorio.** Crear las 8 interfaces en `Negocio/Interfaces` (Pago: solo Agregar, Anular y consultas).
 ✔ *Criterio:* compila.
 
-**Paso 4 — Acceso a datos.** `GimnasioDbContext`, configuración Fluent API, 8 repositorios y migración inicial; crear la BD en LocalDB.
-✔ *Criterio:* `Update-Database` exitoso.
+**Paso 4 — Acceso a datos.** `GimnasioDbContext`, configuración Fluent API, 8 repositorios y migración inicial SQLite; crear la base local.
+✔ *Criterio:* migración aplicada correctamente.
 
 **Paso 5 — Servicios de negocio.** Implementar `ClienteService`, `MembresiaService`, `PagoService`, `ClaseService`, `ReservaService`, `ReporteService` con las reglas de la sección 4.
 ✔ *Criterio:* compila.

@@ -360,4 +360,9 @@ MigrationBackup/
 .ionide/
 
 # Fody - auto-generated XML schema
+
+# Local SQLite database
+Gimnasio.Presentacion/App_Data/*.db
+Gimnasio.Presentacion/App_Data/*.db-shm
+Gimnasio.Presentacion/App_Data/*.db-wal
 FodyWeavers.xsd

@@ -3,15 +3,22 @@ using Gimnasio.Datos.Repositorios;
 using Gimnasio.Negocio.Interfaces;
 using Gimnasio.Negocio.Servicios;
 using Gimnasio.Presentacion.Filtros;
+using Microsoft.Data.Sqlite;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
+var cadenaConexion = builder.Configuration.GetConnectionString("GimnasioDb")
+    ?? throw new InvalidOperationException("No se encontró la cadena de conexión GimnasioDb.");
+var opcionesConexion = new SqliteConnectionStringBuilder(cadenaConexion);
+var rutaBaseDatos = Path.GetFullPath(opcionesConexion.DataSource, builder.Environment.ContentRootPath);
+Directory.CreateDirectory(Path.GetDirectoryName(rutaBaseDatos)!);
+opcionesConexion.DataSource = rutaBaseDatos;
 
 builder.Services.AddScoped<ReglaNegocioExceptionFilter>();
 builder.Services.AddControllersWithViews(opciones =>
     opciones.Filters.AddService<ReglaNegocioExceptionFilter>());
 builder.Services.AddDbContext<GimnasioDbContext>(opciones =>
-    opciones.UseSqlServer(builder.Configuration.GetConnectionString("GimnasioDb")));
+    opciones.UseSqlite(opcionesConexion.ToString()));
 
 builder.Services.AddScoped<IClienteRepositorio, ClienteRepositorio>();
 builder.Services.AddScoped<IPlanRepositorio, PlanRepositorio>();
@@ -30,6 +37,12 @@ builder.Services.AddScoped<ReservaService>();
 builder.Services.AddScoped<ReporteService>();
 
 var app = builder.Build();
+
+using (var scope = app.Services.CreateScope())
+{
+    var contexto = scope.ServiceProvider.GetRequiredService<GimnasioDbContext>();
+    contexto.Database.Migrate();
+}
 
 if (!app.Environment.IsDevelopment())
 {

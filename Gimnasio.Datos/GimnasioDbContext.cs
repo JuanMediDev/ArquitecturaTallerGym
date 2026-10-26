@@ -90,7 +90,7 @@ public class GimnasioDbContext : DbContext
             entidad.Property(reserva => reserva.Estado).HasConversion<string>().HasMaxLength(20);
             entidad.HasIndex(reserva => new { reserva.ClienteId, reserva.ClaseId })
                 .IsUnique()
-                .HasFilter("[Estado] = N'Activa'");
+                .HasFilter("\"Estado\" = 'Activa'");
             entidad.HasOne(reserva => reserva.Cliente)
                 .WithMany(cliente => cliente.Reservas)
                 .HasForeignKey(reserva => reserva.ClienteId)
