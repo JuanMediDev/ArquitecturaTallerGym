@@ -20,6 +20,10 @@
 {
     <div class="alert alert-success" role="status">@mensaje</div>
 }
+@if (TempData["Error"] is string error)
+{
+    <div class="alert alert-danger" role="alert">@error</div>
+}
 
 <div class="module-card mb-4">
     <p class="display-kicker mb-2">Ocupación</p>

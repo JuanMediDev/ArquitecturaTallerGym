@@ -1,68 +1,66 @@
 # Pulso Gimnasio
 
-Aplicación web académica para apoyar la administración diaria de un gimnasio. Permite gestionar clientes, membresías, pagos, clases grupales, reservas, asistencia y reportes desde una interfaz web en español.
+Aplicación web académica para administrar operaciones básicas de un gimnasio: clientes, membresías, pagos, clases grupales, reservas, asistencia y reportes. Implementa arquitectura en capas y MVC con ASP.NET Core, .NET 8, Entity Framework Core y SQLite.
 
-## Descripción
+## Funcionalidades implementadas
 
-El proyecto aplica arquitectura en capas y el patrón MVC para separar la interfaz, las reglas del negocio y la persistencia de datos. Está desarrollado con .NET 8, ASP.NET Core MVC, Entity Framework Core y SQLite. La solución contiene cuatro proyectos: Presentación, Negocio, Datos y Pruebas.
+- **Clientes:** listado, registro, edición, detalle y cambio de estado.
+- **Membresías:** creación de planes, asignación a clientes y consulta de membresías.
+- **Pagos:** registro e historial por cliente. El historial se conserva; los pagos se pueden anular, no editar ni eliminar.
+- **Clases:** programación de sesiones con instructor, horario, cupo máximo y estado.
+- **Reservas y asistencia:** reserva y cancelación de cupos, consulta por clase y registro de asistencia.
+- **Reportes:** ingresos por periodo, membresías activas y asistencia por rango de fechas.
+- **Instructores de demostración:** tres instructores iniciales permiten explorar la programación de clases. `Instructor` es una entidad persistida: la migración crea la tabla `Instructores`, inserta esos datos iniciales y relaciona cada clase mediante `InstructorId`.
 
-## Funcionalidades
+Las reglas de negocio residen en los servicios de `Gimnasio.Negocio`. Por ejemplo, `ReservaService.Reservar` verifica cliente activo, membresía vigente con pago registrado, ausencia de una reserva duplicada y cupo disponible. Los rechazos esperados de reserva, cancelación y asistencia se muestran como alertas contextuales; las vistas presentan el mensaje, pero no determinan la regla.
 
-- **Clientes:** consultar, registrar, editar, ver el perfil y cambiar el estado de un cliente.
-- **Membresías:** administrar planes, asignar planes a clientes y consultar sus membresías e historial.
-- **Pagos:** registrar pagos y consultar el historial por cliente. Los pagos se conservan; la interfaz no permite editarlos ni eliminarlos.
-- **Clases:** programar sesiones grupales y consultar su instructor, horario, cupo y estado.
-- **Reservas y asistencia:** reservar o cancelar un cupo, consultar reservas por clase y registrar asistencia.
-- **Reportes:** consultar ingresos por periodo, membresías activas y asistencia por rango de fechas.
-- **Instructores de demostración:** se incluyen datos iniciales para poder programar clases y explorar los flujos de reservas.
-
-Las reglas de negocio se ejecutan en la capa Negocio. Entre otras validaciones, se comprueba el acceso del cliente antes de reservar, la vigencia y el pago de su membresía, el cupo disponible y la existencia de una reserva activa antes de registrar asistencia.
-
-## Objetivo académico
-
-El objetivo es aplicar los conceptos de arquitectura de software vistos en el taller mediante una solución pequeña y funcional. En particular, se busca:
-
-- Separar las responsabilidades en Presentación, Negocio, Acceso a Datos y Base de Datos.
-- Organizar la interfaz web con el patrón MVC.
-- Mantener las reglas en servicios de Negocio y el acceso a datos detrás de interfaces de repositorio.
-- Usar inyección de dependencias, Entity Framework Core y migraciones para persistir información.
-- Verificar reglas de negocio mediante pruebas automatizadas con xUnit y Moq.
-
-## Estructura de la solución
+## Arquitectura y solución
 
 ```text
 Gimnasio.sln
-├── Gimnasio.Presentacion  ASP.NET Core MVC, controladores, vistas y ViewModels
+├── Gimnasio.Presentacion  ASP.NET Core MVC: controladores, vistas Razor y ViewModels
 ├── Gimnasio.Negocio       Entidades, servicios, reglas e interfaces de repositorio
-├── Gimnasio.Datos         DbContext, repositorios EF Core y migraciones
-└── Gimnasio.Pruebas       Pruebas automatizadas de la capa de Negocio
+├── Gimnasio.Datos         DbContext, repositorios EF Core, migraciones y datos semilla
+└── Gimnasio.Pruebas       Pruebas automatizadas de reglas de negocio (xUnit y Moq)
 ```
 
-La Presentación invoca servicios de Negocio; Negocio define las interfaces de persistencia; Datos implementa esas interfaces. La Presentación referencia Datos únicamente para registrar las implementaciones en el contenedor de dependencias.
+Los controladores de Presentación invocan servicios de Negocio. Negocio define las interfaces de repositorio y Datos las implementa con EF Core. `Gimnasio.Presentacion` registra estas implementaciones mediante inyección de dependencias. La base de datos local es SQLite.
 
-## Requisitos para ejecutar
+### Persistencia
 
-- **Visual Studio 2022 o posterior**, con la carga de trabajo **ASP.NET y desarrollo web**, o un editor equivalente.
-- **SDK de .NET 8**.
+La migración inicial define las tablas `Clientes`, `PlanesMembresia`, `Membresias`, `Pagos`, `Instructores`, `Clases`, `Reservas` y `Asistencias`, junto con sus relaciones. En particular, `Clases.InstructorId` referencia `Instructores.Id`; los tres instructores de demostración se insertan como datos iniciales. `Reservas` tiene un índice único filtrado por cliente y clase para reservas activas.
 
-No se necesita instalar un servidor de base de datos ni `dotnet-ef`. Entity Framework Core usa SQLite y crea/aplica las migraciones al iniciar la aplicación. El archivo se guarda en `Gimnasio.Presentacion/App_Data/gimnasio.db`; esa carpeta y sus archivos auxiliares están excluidos de Git para que cada desarrollador tenga sus propios datos locales.
+Al iniciar la aplicación, `Program.cs` crea la carpeta de la base de datos si hace falta y aplica las migraciones pendientes. El archivo SQLite y los auxiliares locales no se requieren en Git: un clon nuevo crea su propia base en `Gimnasio.Presentacion/App_Data/gimnasio.db`.
 
-### Preparar y ejecutar
+## Ejecutar desde un clon nuevo
 
-Clona o actualiza el repositorio y ejecuta la aplicación desde Visual Studio estableciendo `Gimnasio.Presentacion` como proyecto de inicio, o desde la carpeta raíz de la solución con:
+### Requisitos
+
+- SDK de .NET 8 instalado.
+- Para Visual Studio, la carga de trabajo **ASP.NET y desarrollo web**.
+- No se requiere servidor de base de datos ni instalar `dotnet-ef`.
+
+### Pasos
+
+Desde la carpeta raíz del repositorio, ejecuta:
 
 ```powershell
-dotnet run --project Gimnasio.Presentacion
+dotnet run --project Gimnasio.Presentacion\Gimnasio.Presentacion.csproj
 ```
 
-En el primer inicio se crea el archivo SQLite, se aplica el esquema y se cargan los instructores de demostración. No se copian los datos que existían en SQL Server LocalDB; cada instalación empieza con una base nueva.
+La primera ejecución restaura las dependencias de los proyectos, crea la carpeta `App_Data`, genera la base SQLite, aplica la migración y carga los instructores iniciales. Después, abre la URL local indicada por ASP.NET Core en la consola. En Visual Studio también se puede seleccionar `Gimnasio.Presentacion` como proyecto de inicio y ejecutar.
 
-Para ejecutar las pruebas automatizadas:
+Para compilar toda la solución y ejecutar las pruebas:
 
 ```powershell
+dotnet build Gimnasio.sln
 dotnet test Gimnasio.sln
 ```
 
+## Diagramas del entregable
+
+En `Diagramas y Cuestionario` están las respuestas del cuestionario, los diagramas PNG y los diagramas editables `Diagrama_Capas_Final.drawio` y `Diagrama_MVC_Final.drawio`. Los diagramas de capas y MVC muestran `Instructor` como entidad de Negocio, su persistencia y su relación con `Clase`. El instructor no aparece en el flujo de reserva porque no participa en las decisiones de autorización ni disponibilidad.
+
 ## Alcance
 
-Es un proyecto académico enfocado en la gestión básica de un gimnasio. No incluye inicio de sesión ni roles, pasarelas de pago reales, notificaciones, API pública, administración avanzada de varias sedes ni configuración de despliegue.
+Es un proyecto académico enfocado en la gestión básica de un gimnasio. No incluye autenticación ni roles, pasarelas de pago reales, notificaciones, API pública, administración avanzada de varias sedes ni despliegue.

@@ -1,4 +1,5 @@
 using Gimnasio.Negocio.Entidades;
+using Gimnasio.Negocio.Excepciones;
 using Gimnasio.Negocio.Servicios;
 using Gimnasio.Presentacion.Models;
 using Microsoft.AspNetCore.Mvc;
@@ -40,7 +41,17 @@ public class ReservasController : Controller
             return View(modelo);
         }
 
-        _reservaService.Reservar(modelo.ClienteId, modelo.ClaseId);
+        try
+        {
+            _reservaService.Reservar(modelo.ClienteId, modelo.ClaseId);
+        }
+        catch (ReglaNegocioException excepcion)
+        {
+            ModelState.AddModelError(string.Empty, excepcion.Message);
+            CargarOpciones(modelo);
+            return View(modelo);
+        }
+
         TempData["Mensaje"] = "La reserva se registró correctamente.";
         return RedirectToAction(nameof(PorClase), new { claseId = modelo.ClaseId });
     }
@@ -49,8 +60,16 @@ public class ReservasController : Controller
     [ValidateAntiForgeryToken]
     public IActionResult Cancelar(int id, int claseId)
     {
-        _reservaService.Cancelar(id);
-        TempData["Mensaje"] = "La reserva se canceló correctamente.";
+        try
+        {
+            _reservaService.Cancelar(id);
+            TempData["Mensaje"] = "La reserva se canceló correctamente.";
+        }
+        catch (ReglaNegocioException excepcion)
+        {
+            TempData["Error"] = excepcion.Message;
+        }
+
         return RedirectToAction(nameof(PorClase), new { claseId });
     }
 
@@ -107,8 +126,16 @@ public class ReservasController : Controller
     [ValidateAntiForgeryToken]
     public IActionResult RegistrarAsistencia(int clienteId, int claseId)
     {
-        _reservaService.RegistrarAsistencia(clienteId, claseId);
-        TempData["Mensaje"] = "La asistencia se registró correctamente.";
+        try
+        {
+            _reservaService.RegistrarAsistencia(clienteId, claseId);
+            TempData["Mensaje"] = "La asistencia se registró correctamente.";
+        }
+        catch (ReglaNegocioException excepcion)
+        {
+            TempData["Error"] = excepcion.Message;
+        }
+
         return RedirectToAction(nameof(PorClase), new { claseId });
     }
 

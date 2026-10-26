@@ -22,7 +22,7 @@
     {
         <form asp-action="Reservar" method="post">
             @Html.AntiForgeryToken()
-            <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+            <div asp-validation-summary="ModelOnly" class="alert alert-danger mb-3" role="alert"></div>
             <div class="row g-3">
                 <div class="col-md-6">
                     <label asp-for="ClienteId" class="form-label"></label>
